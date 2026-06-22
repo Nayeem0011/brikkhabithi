@@ -83,7 +83,7 @@ export default function ProductVariants() {
 
   return (
     <section
-      className="px-5 py-20"
+      className="px-2 sm:px-3 md:px-5 py-20"
       style={{
         background: "linear-gradient(180deg, #FBF8F1 0%, #EFE2C9 100%)",
         fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
@@ -97,12 +97,12 @@ export default function ProductVariants() {
             আমাদের চারা
           </h2>
         </Reveal>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-1.5 sm:gap-x-3 md:gap-x-5 gap-y-5 sm:gap-y-7 md:gap-y-10">
           {PRODUCTS.map((p) => (
-            <Reveal key={p.id} className="p-tag-card">
+            <Reveal key={p.id} className="p-tag-card rounded-md sm:rounded-lg md:rounded-xl">
               <div className="p-img-slot aspect-square flex items-center justify-center relative">
                 {p.image ? (
-                  <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-xl" />
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-md sm:rounded-lg md:rounded-xl" />
                 ) : (
                   <LeafIcon className="w-10 h-10" style={{ color: "rgba(27,94,58,.35)" }} />
                 )}
@@ -116,7 +116,7 @@ export default function ProductVariants() {
                 </p>
                 <a
                   href={waLink(`আমি ${p.name} সম্পর্কে জানতে চাই। দাম: ৳${p.price}`)}
-                  className="p-btn-green text-xs mt-3 inline-flex items-center gap-1.5 w-full justify-center"
+                  className="p-btn-green text-xs mt-3 inline-flex items-center gap-1 md:gap-1.5 w-full justify-center"
                 >
                   <ChatIcon className="w-3.5 h-3.5" />
                   অর্ডার করুন
