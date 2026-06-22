@@ -1,12 +1,12 @@
-import { Grape, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
+import navbarlogo from "../assets/image/navbarlogo.png";
 
-export default function Header() {
+const Header = () => {
   return (
     <header className="sticky top-0 z-40 border-b border-vine-light/20 bg-cream/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
         <a href="#" className="flex items-center gap-2">
-          <Grape className="h-7 w-7 text-plum" strokeWidth={1.5} />
-          <span className="font-display text-xl text-vine-dark">বৃক্ষবীথি নার্সারি</span>
+          <img src={navbarlogo} alt="loto" className="w-[110px] h-auto object-cover" />
         </a>
 
         <div className="flex items-center gap-3">
@@ -17,14 +17,25 @@ export default function Header() {
             <Phone className="h-4 w-4" />
             01744-483744
           </a>
+
           <a
-            href="#order"
-            className="rounded-full bg-vine px-4 py-2 text-sm font-semibold text-cream transition hover:bg-vine-dark"
+            href="https://wa.me/8801744483744"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group flex w-fit items-center gap-1 rounded-full bg-vine px-4 py-2 text-sm font-semibold text-cream shadow-lg shadow-vine/20 transition hover:bg-vine-dark"
           >
             অর্ডার করুন
+            <svg
+              viewBox="0 0 24 24"
+              className="h-4 w-4 fill-current transition group-hover:translate-x-1"
+            >
+              <path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.85.5 3.59 1.45 5.12L2 22l5.13-1.34a9.87 9.87 0 0 0 4.91 1.31h.01c5.46 0 9.91-4.45 9.91-9.91A9.86 9.86 0 0 0 12.04 2zm0 18.02h-.01a8.13 8.13 0 0 1-4.14-1.13l-.3-.18-3.05.8.81-2.97-.2-.31a8.13 8.13 0 0 1-1.25-4.33c0-4.49 3.66-8.15 8.15-8.15 2.18 0 4.22.85 5.76 2.39a8.09 8.09 0 0 1 2.39 5.76c0 4.49-3.66 8.15-8.15 8.15zm4.47-6.1c-.24-.12-1.45-.71-1.68-.79-.22-.08-.39-.12-.55.12-.16.24-.63.79-.78.95-.14.16-.29.18-.53.06-.24-.12-1.02-.38-1.95-1.21-.72-.64-1.21-1.43-1.35-1.67-.14-.24-.01-.37.11-.49.11-.11.24-.29.36-.43.12-.14.16-.24.24-.41.08-.16.04-.31-.02-.43-.06-.12-.55-1.33-.76-1.83-.2-.48-.4-.42-.55-.42h-.47c-.16 0-.43.06-.65.31-.22.24-.86.84-.86 2.05s.88 2.38 1 2.55c.12.16 1.73 2.64 4.2 3.7.59.25 1.05.4 1.41.51.59.19 1.13.16 1.55.1.47-.07 1.45-.59 1.65-1.16.2-.57.2-1.06.14-1.16-.06-.1-.22-.16-.46-.28z" />
+            </svg>
           </a>
         </div>
       </div>
     </header>
-  );
+  )
 }
+
+export default Header

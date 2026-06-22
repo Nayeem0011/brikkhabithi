@@ -1,87 +1,130 @@
-import { Grape, Droplets, CircleDot } from "lucide-react";
-import SectionHeading from "./SectionHeading";
+import { useEffect, useRef, useState } from "react";
 
-import grape1 from "../assets/image/grape-1.jpg";
+import product from "../assets/image/product.jpg";
+import product1 from "../assets/image/product1.jpg";
+import product2 from "../assets/image/product2.jpg";
+import product3 from "../assets/image/product3.jpg";
+import product4 from "../assets/image/product4.jpg";
+import product5 from "../assets/image/product5.jpg";
+import product6 from "../assets/image/product6.jpg";
+import product7 from "../assets/image/product7.jpg";
 
-export const variants = [
-  {
-    id: 1,
-    name: "বাইকুনুর",
-    quantity: "১ টি",
-    price: 360,
-    image: grape1,
-    color: "গাঢ় বেগুনি-লাল রঙের লম্বাটে ফল, গড় ওজন ১০-১২ গ্রাম",
-    taste: "অত্যন্ত মিষ্টি (ব্রিক্স ১৯-২১%) ও সামান্য খাস্তা স্বাদের",
-    seed: "সম্পূর্ণ বীজবিহীন জাত",
-  },
-  {
-    id: 2,
-    name: "বাইকুনুর",
-    quantity: "২ টি",
-    price: 700,
-    image: grape1,
-    color: "গাঢ় বেগুনি-লাল রঙের লম্বাটে ফল, গড় ওজন ১০-১২ গ্রাম",
-    taste: "অত্যন্ত মিষ্টি (ব্রিক্স ১৯-২১%) ও সামান্য খাস্তা স্বাদের",
-    seed: "সম্পূর্ণ বীজবিহীন জাত",
-  },
-  {
-    id: 3,
-    name: "বাইকুনুর",
-    quantity: "৩ টি",
-    price: 1000,
-    image: grape1,
-    color: "গাঢ় বেগুনি-লাল রঙের লম্বাটে ফল, গড় ওজন ১০-১২ গ্রাম",
-    taste: "অত্যন্ত মিষ্টি (ব্রিক্স ১৯-২১%) ও সামান্য খাস্তা স্বাদের",
-    seed: "সম্পূর্ণ বীজবিহীন জাত",
-  },
+const WHATSAPP_NUMBER = "8801744483744";
+
+const PRODUCTS = [
+  { id: 1, name: "বাইকুনুর আঙুর চারা", note: "মিষ্টি, বীজবিহীন জাত", image: product },
+  { id: 2, name: "বোম্বাই লিচু চারা", note: "ছোট দানা, রসালো", image: product1 },
+  { id: 3, name: "ড্রাগন ফ্রুট চারা", note: "লাল মাংসল জাত", image: product2 },
+  { id: 4, name: "আমের চারা", note: "দ্রুত ও নিয়মিত ফলন", image: product3 },
+  { id: 5, name: "মাল্টা ও কমলা", note: "রসালো, কমলা স্বাদ", image: product4 },
+  { id: 6, name: "স্ট্রবেরি পেয়ারা চারা", note: "মুচমুচে ও মিষ্টি", image: product5 },
+  { id: 7, name: "আপেল কুল", note: "মিষ্টি স্বাদ", image: product6 },
+  { id: 8, name: "কাগজি লেবু চারা", note: "সারা বছর ফলনশীল", image: product7 },
 ];
 
-function VariantCard({ variant }) {
+function waLink(message) {
+  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+}
+
+function useReveal(threshold = 0.15) {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            setVisible(true);
+            obs.unobserve(e.target);
+          }
+        });
+      },
+      { threshold }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [threshold]);
+  return [ref, visible];
+}
+
+function Reveal({ as: Tag = "div", className = "", children, ...rest }) {
+  const [ref, visible] = useReveal();
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-vine-light/20 bg-white/60 p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-      <img
-        src={variant.image}
-        alt={variant.name}
-        className="aspect-square w-full rounded-2xl object-cover"
+    <Tag ref={ref} className={`p-reveal ${visible ? "p-reveal-visible" : ""} ${className}`} {...rest}>
+      {children}
+    </Tag>
+  );
+}
+
+function LeafIcon({ className = "", ...rest }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
+      <path
+        d="M12 2.5C6.5 2.5 2.5 7.2 2.5 12.8c0 4.6 3.4 8.2 7.8 8.7.4-6.4 2.6-9.8 9.9-12C19.9 5.4 16.3 2.5 12 2.5Z"
+        fill="currentColor"
       />
+      <path d="M10.3 21.3C10.6 14.9 12.6 11 19.8 8.4" stroke="white" strokeOpacity="0.45" strokeWidth="1.1" strokeLinecap="round" />
+    </svg>
+  );
+}
 
-      {/* Name + Quantity + Price */}
-      <div className="flex items-start justify-between gap-3">
-        <h3 className="font-display text-2xl text-vine-dark">{variant.name}</h3>
-
-        <div className="flex items-center gap-3 text-right">
-          <p className="text-sm font-normal text-ink/60">{variant.quantity}</p>
-          <p className="text-xl font-bold text-plum">৳{variant.price}</p>
-        </div>
-      </div>
-
-      <div className="flex items-start gap-2 text-sm text-ink/70">
-        <CircleDot className="mt-0.5 h-4 w-4 shrink-0 text-plum" />
-        <p>{variant.color}</p>
-      </div>
-
-      <div className="flex items-start gap-2 text-sm text-ink/70">
-        <Droplets className="mt-0.5 h-4 w-4 shrink-0 text-plum" />
-        <p>{variant.taste}</p>
-      </div>
-
-      <div className="flex items-start gap-2 text-sm text-ink/70">
-        <Grape className="mt-0.5 h-4 w-4 shrink-0 text-plum" />
-        <p>{variant.seed}</p>
-      </div>
-    </div>
+function ChatIcon({ className = "" }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 11.5a8 8 0 0 1-9.8 7.8L4 21l1.7-5.1A8 8 0 1 1 21 11.5Z" />
+      <path d="M8.3 11.5h7.4M8.3 8.6h5.2" />
+    </svg>
   );
 }
 
 export default function ProductVariants() {
-  return (
-    <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-      <SectionHeading eyebrow="প্রতিটি চারা ৩ ফুট উচ্চতার" title="আমাদের সেরা অফার" />
 
-      <div className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {variants.map((variant) => (
-          <VariantCard key={variant.id} variant={variant} />
-        ))}
+  return (
+    <section
+      className="px-5 py-20"
+      style={{
+        background: "linear-gradient(180deg, #FBF8F1 0%, #EFE2C9 100%)",
+        fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
+      }}
+    >
+
+      <div className="p-root max-w-6xl mx-auto">
+        <Reveal className="text-center mb-12">
+          <p className="p-eyebrow">তাজা ও সতেজ</p>
+          <h2 className="text-2xl md:text-4xl font-extrabold mt-2" style={{ color: "#0E3322" }}>
+            আমাদের চারা
+          </h2>
+        </Reveal>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-5 gap-y-10">
+          {PRODUCTS.map((p) => (
+            <Reveal key={p.id} className="p-tag-card">
+              <div className="p-img-slot aspect-square flex items-center justify-center relative">
+                {p.image ? (
+                  <img src={p.image} alt={p.name} className="w-full h-full object-cover rounded-xl" />
+                ) : (
+                  <LeafIcon className="w-10 h-10" style={{ color: "rgba(27,94,58,.35)" }} />
+                )}
+              </div>
+              <div className="px-3 pt-3">
+                <h3 className="font-bold text-sm leading-snug" style={{ color: "#1A1A1A" }}>
+                  {p.name}
+                </h3>
+                <p className="text-xs mt-1" style={{ color: "#5E5E5E" }}>
+                  {p.note}
+                </p>
+                <a
+                  href={waLink(`আমি ${p.name} সম্পর্কে জানতে চাই। দাম: ৳${p.price}`)}
+                  className="p-btn-green text-xs mt-3 inline-flex items-center gap-1.5 w-full justify-center"
+                >
+                  <ChatIcon className="w-3.5 h-3.5" />
+                  অর্ডার করুন
+                </a>
+              </div>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );

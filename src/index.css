@@ -5,7 +5,10 @@
 @tailwind utilities;
 
 @layer base {
-  h1, h2, h3 {
+
+  h1,
+  h2,
+  h3 {
     font-weight: 600;
   }
 }
@@ -16,4 +19,115 @@ html {
 
 body {
   @apply bg-cream text-ink font-body;
+}
+
+.p-eyebrow {
+  color: #1B5E3A;
+  font-weight: 700;
+  letter-spacing: .08em;
+  font-size: .8rem;
+}
+
+.p-eyebrow::before {
+  content: "●";
+  color: #E8A33D;
+  margin-right: .5rem;
+  font-size: .55rem;
+  vertical-align: middle;
+}
+
+.p-tag-card {
+  background: #FBF8F1;
+  border-radius: 12px;
+  border: 1.5px solid rgba(27, 94, 58, .16);
+  padding-bottom: 1rem;
+  box-shadow: 0 6px 18px rgba(14, 51, 34, .08);
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.p-tag-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 14px 28px rgba(14, 51, 34, .16);
+}
+
+.p-btn-green {
+  background: #1B5E3A;
+  color: #FBF8F1;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: .7rem 1.4rem;
+  box-shadow: 0 8px 18px rgba(27, 94, 58, .22);
+  transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.p-btn-green:hover {
+  transform: translateY(-2px);
+  background: #0E3322;
+}
+
+.p-reveal-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .p-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+.p-root :focus-visible {
+  outline: 3px solid #E8A33D;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+
+
+.f-root :focus-visible {
+  outline: 3px solid #E8A33D;
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.f-wa-float {
+  position: fixed;
+  right: 1.25rem;
+  bottom: 1.25rem;
+  z-index: 50;
+  background: #1B5E3A;
+  color: #FBF8F1;
+  box-shadow: 0 10px 24px rgba(14, 51, 34, .35);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .f-wa-float::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: #1B5E3A;
+    animation: f-pulse 2.4s ease-out infinite;
+    z-index: -1;
+  }
+}
+
+@keyframes f-pulse {
+  0% {
+    transform: scale(1);
+    opacity: .55;
+  }
+
+  100% {
+    transform: scale(1.9);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .f-wa-float::before {
+    animation: none !important;
+  }
 }

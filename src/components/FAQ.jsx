@@ -21,8 +21,9 @@ const faqs = [
   },
 ];
 
-export default function FAQ() {
-  const [open, setOpen] = useState(0);
+const FAQ = () => {
+
+  const [open, setOpen] = useState(-1);
 
   return (
     <section className="bg-vine/5 py-16">
@@ -65,5 +66,7 @@ export default function FAQ() {
         </div>
       </div>
     </section>
-  );
+  )
 }
+
+export default FAQ
