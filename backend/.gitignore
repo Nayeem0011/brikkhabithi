@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment variables (contains secrets)
+.env
+
+# SQLite database files (local data, don't commit)
+data.sqlite
+data.sqlite-shm
+data.sqlite-wal
+
+# Uploaded product images (keep folder, ignore contents)
+uploads/*
+!uploads/.gitkeep
+
+# Logs
+*.log
+npm-debug.log*

@@ -1,0 +1,50 @@
+# brikkhabithi Nursery 
+
+A single-product landing page (with order form) built using React + Tailwind CSS, built for selling grape saplings. Follows the structure of a typical Bangladeshi cash-on-delivery e-commerce landing page.
+
+## Tech Stack
+
+- **React 18** + **Vite** — frontend and bundler
+- **Tailwind CSS** — styling
+- **lucide-react** — icons
+
+## Getting Started
+
+```bash
+npm install
+npm run dev
+```
+
+Visit `http://localhost:5173` in your browser. For a production build:
+
+```bash
+npm run build
+npm run preview
+```
+
+## Folder Structure
+
+```
+src/
+├── assets/
+│   ├──font/
+│   ├──image/         # product images (place grape-1.jpg here)
+├── components/
+│   ├── Header.jsx               # top nav + brand logo
+│   ├── Hero.jsx                 # headline, offer price, main CTA
+│   ├── ProductVariants.jsx      # package list — single source of truth for price/quantity
+│   ├── WhyChooseUs.jsx          # 5 reasons to buy
+│   ├── TargetAudience.jsx       # who this product is for
+│   ├── CountdownOffer.jsx       # live countdown timer + offer price
+│   ├── TrustBadges.jsx          # 4 trust badges
+│   ├── OrderForm.jsx            # package selection + billing form + live total
+│   ├── FAQ.jsx                  # FAQ accordion
+│   ├── Footer.jsx               # footer info
+│   ├── StickyCallButton.jsx     # fixed mobile call button
+│   ├── FeatureList.jsx          # reusable checkmark-list component
+│   ├── SectionHeading.jsx       # reusable section title
+│   ├── VineDivider.jsx          # signature SVG divider
+├── App.jsx                 # stacks all sections together
+├── main.jsx                # React entry point
+└── index.css               # Tailwind + font imports
+```
