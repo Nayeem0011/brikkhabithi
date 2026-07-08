@@ -6,7 +6,9 @@ const { requireAdmin } = require("../middleware/auth");
 
 const router = express.Router();
 
-const uploadDir = path.join(__dirname, "..", "uploads");
+// Same persistence note as db.js: use DATA_DIR (set to a mounted volume
+// path on Railway) so uploaded images survive redeploys.
+const uploadDir = path.join(process.env.DATA_DIR || path.join(__dirname, ".."), "uploads");
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
 const storage = multer.diskStorage({

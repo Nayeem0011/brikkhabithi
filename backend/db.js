@@ -1,7 +1,18 @@
 const path = require("path");
+const fs = require("fs");
 const Database = require("better-sqlite3");
 
-const db = new Database(path.join(__dirname, "data.sqlite"));
+// IMPORTANT (Railway / most container hosts): the filesystem is EPHEMERAL.
+// Anything written to disk (this sqlite file, uploaded images) is wiped
+// every time the service redeploys or restarts. To keep data permanently:
+//   1. In Railway: Service -> Settings -> Volumes -> add a volume, mount
+//      path e.g. /data
+//   2. Set an environment variable DATA_DIR=/data on the service
+// Without a volume + DATA_DIR set, products/orders WILL disappear on redeploy.
+const DATA_DIR = process.env.DATA_DIR || __dirname;
+if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+
+const db = new Database(path.join(DATA_DIR, "data.sqlite"));
 db.pragma("journal_mode = WAL");
 
 db.exec(`
