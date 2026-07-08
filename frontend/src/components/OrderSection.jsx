@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Check, Loader2, Minus, Plus } from "lucide-react";
+import { Loader2, Minus, Plus } from "lucide-react";
 import { api } from "../api";
 
 function Stepper({ value, onChange, disabled }) {
@@ -28,6 +28,27 @@ function Stepper({ value, onChange, disabled }) {
   );
 }
 
+// Simple hand-shake / thank-you icon used on the success screen.
+function ThanksIcon({ className = "" }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path
+        d="M12 21c-3.5-2-7-4.8-7-8.8C5 9.1 7.1 7 9.6 7c1.3 0 2.5.6 3.4 1.6C13.9 7.6 15.1 7 16.4 7 18.9 7 21 9.1 21 12.2c0 4-3.5 6.8-7 8.8-.7.4-1.3.4-2 0Z"
+        fill="currentColor"
+        opacity="0.15"
+      />
+      <path
+        d="M8.5 12.5c1-1.3 2.2-2 3.5-2s2.5.7 3.5 2M7 15.5c1.4-1 2.9-1.6 5-1.6s3.6.6 5 1.6"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+const PHONE_PATTERN = /^01[3-9][0-9]{8}$/;
+
 export default function OrderSection() {
   const [products, setProducts] = useState([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
@@ -47,6 +68,17 @@ export default function OrderSection() {
       .then((rows) => setProducts(rows))
       .catch(() => setLoadError("পণ্যের তালিকা লোড করা যায়নি। একটু পরে আবার চেষ্টা করুন।"))
       .finally(() => setLoadingProducts(false));
+  }, []);
+
+  // Listen for "add to order" clicks coming from the product cards above.
+  useEffect(() => {
+    function handleAddToOrder(e) {
+      const { id } = e.detail || {};
+      if (id == null) return;
+      setSelections((prev) => ({ ...prev, [id]: prev[id] ? prev[id] + 1 : 1 }));
+    }
+    window.addEventListener("add-to-order", handleAddToOrder);
+    return () => window.removeEventListener("add-to-order", handleAddToOrder);
   }, []);
 
   const toggleProduct = (product) => {
@@ -84,6 +116,14 @@ export default function OrderSection() {
   const validate = () => {
     const errs = {};
     if (!form.name.trim()) errs.name = "আপনার নাম দিন";
+
+    const phone = form.phone.trim();
+    if (!phone) {
+      errs.phone = "মোবাইল নম্বর আবশ্যক";
+    } else if (!PHONE_PATTERN.test(phone)) {
+      errs.phone = "সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678)";
+    }
+
     if (selectedItems.length === 0) errs.items = "কমপক্ষে একটি পণ্য নির্বাচন করুন";
     setErrors(errs);
     return Object.keys(errs).length === 0;
@@ -115,21 +155,35 @@ export default function OrderSection() {
 
   if (result) {
     return (
-      <section id="order" className="px-4 py-16 sm:px-6">
-        <div className="mx-auto max-w-xl rounded-2xl border border-vine-light/20 bg-white p-8 text-center shadow-lg shadow-vine/10">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-full bg-vine/10 text-vine">
-            <Check className="h-7 w-7" />
+      <section id="order" className="px-4 py-16 sm:px-6" style={{ background: "#FBF8F1" }}>
+        <div className="mx-auto max-w-2xl rounded-2xl border border-vine-light/20 bg-white px-6 py-12 text-center shadow-lg shadow-vine/10 sm:px-12">
+          <div
+            className="mx-auto mb-6 grid h-24 w-24 place-items-center rounded-full"
+            style={{ background: "#E9F1EA", color: "#1B5E3A" }}
+          >
+            <ThanksIcon className="h-12 w-12" />
           </div>
-          <h3 className="text-xl font-bold text-vine-dark">অর্ডার সফলভাবে সম্পন্ন হয়েছে!</h3>
-          <p className="mt-2 text-sm text-ink/70">
-            অর্ডার নম্বর <span className="font-semibold text-ink">#{result.id}</span> — মোট মূল্য{" "}
-            <span className="font-semibold text-ink">৳{result.total}</span>
+
+          <h3 className="text-lg font-bold leading-relaxed text-ink sm:text-xl">
+            ধন্যবাদ! আপনার অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। আমাদের সাপোর্ট টিম থেকে আপনাকে কল
+            করে অর্ডারটি কনফার্ম করা হবে, ইনশাআল্লাহ।
+          </h3>
+
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed text-ink/60">
+            <span className="font-semibold text-ink/70">গুরুত্বপূর্ণ তথ্যঃ</span> সাধারণত অর্ডার
+            কনফার্ম করার পর আমরা ২ থেকে ৩ কার্যদিবসের মধ্যে ডেলিভারি নিশ্চিত করি। অর্ডার নিশ্চিত
+            হওয়ার পর আমাদের অভিজ্ঞ কারিগররা যত্নসহকারে চারাগুলো প্রস্তুত করেন, যাতে আপনার হাতে
+            সুস্থ ও সতেজ চারা পৌঁছায়। এই সামান্য সময়টুকু শুধুমাত্র মান বজায় রাখার জন্যই প্রয়োজন।
           </p>
-          <p className="mt-1 text-sm text-ink/70">আমরা শীঘ্রই আপনার সাথে যোগাযোগ করব।</p>
+
+          <p className="mt-4 text-sm font-semibold" style={{ color: "#1B5E3A" }}>
+            অর্ডার নম্বর #{result.id} — মোট মূল্য ৳{result.total}
+          </p>
+
           <button
             type="button"
             onClick={() => setResult(null)}
-            className="mt-6 rounded-full bg-vine px-5 py-2 text-sm font-semibold text-cream hover:bg-vine-dark"
+            className="mt-8 rounded-full bg-vine px-6 py-2.5 text-sm font-semibold text-cream hover:bg-vine-dark"
           >
             আরেকটি অর্ডার করুন
           </button>
@@ -164,11 +218,10 @@ export default function OrderSection() {
                 return (
                   <label
                     key={p.id}
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${
-                      checked
+                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${checked
                         ? "border-vine bg-vine/5 shadow-sm"
                         : "border-vine-light/20 bg-white hover:border-vine-light/40"
-                    }`}
+                      }`}
                   >
                     <input
                       type="checkbox"
@@ -214,21 +267,24 @@ export default function OrderSection() {
                     value={form.name}
                     onChange={handleChange("name")}
                     placeholder="আপনার নাম লিখুন..."
-                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-vine ${
-                      errors.name ? "border-red-400" : "border-vine-light/30"
-                    }`}
+                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-vine ${errors.name ? "border-red-400" : "border-vine-light/30"
+                      }`}
                   />
                   {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
                 </div>
                 <div>
-                  <label className="mb-1 block text-sm font-medium text-ink">মোবাইল নম্বর</label>
+                  <label className="mb-1 block text-sm font-medium text-ink">
+                    মোবাইল নম্বর <span className="text-red-500">*</span>
+                  </label>
                   <input
                     type="tel"
                     value={form.phone}
                     onChange={handleChange("phone")}
                     placeholder="01XXXXXXXXX"
-                    className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none focus:border-vine"
+                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-vine ${errors.phone ? "border-red-400" : "border-vine-light/30"
+                      }`}
                   />
+                  {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
                 </div>
                 <div>
                   <label className="mb-1 block text-sm font-medium text-ink">ঠিকানা</label>

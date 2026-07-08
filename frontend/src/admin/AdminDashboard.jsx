@@ -229,17 +229,15 @@ export default function AdminDashboard() {
         <div className="mb-6 flex gap-2">
           <button
             onClick={() => setTab("orders")}
-            className={`rounded-full px-4 py-2 text-sm font-semibold ${
-              tab === "orders" ? "bg-vine text-cream" : "bg-white text-ink/70 border border-vine-light/30"
-            }`}
+            className={`rounded-full px-4 py-2 text-sm font-semibold ${tab === "orders" ? "bg-vine text-cream" : "bg-white text-ink/70 border border-vine-light/30"
+              }`}
           >
             অর্ডারসমূহ
           </button>
           <button
             onClick={() => setTab("products")}
-            className={`rounded-full px-4 py-2 text-sm font-semibold ${
-              tab === "products" ? "bg-vine text-cream" : "bg-white text-ink/70 border border-vine-light/30"
-            }`}
+            className={`rounded-full px-4 py-2 text-sm font-semibold ${tab === "products" ? "bg-vine text-cream" : "bg-white text-ink/70 border border-vine-light/30"
+              }`}
           >
             পণ্য ব্যবস্থাপনা
           </button>

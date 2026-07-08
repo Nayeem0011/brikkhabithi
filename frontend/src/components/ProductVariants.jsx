@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { Loader2 } from "lucide-react";
 import { api } from "../api";
-
-const WHATSAPP_NUMBER = "8801744483744";
-
-function waLink(message) {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-}
 
 function useReveal(threshold = 0.15) {
   const ref = useRef(null);
@@ -51,13 +46,14 @@ function LeafIcon({ className = "", ...rest }) {
   );
 }
 
-function ChatIcon({ className = "" }) {
-  return (
-    <svg viewBox="0 0 24 24" className={className} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M21 11.5a8 8 0 0 1-9.8 7.8L4 21l1.7-5.1A8 8 0 1 1 21 11.5Z" />
-      <path d="M8.3 11.5h7.4M8.3 8.6h5.2" />
-    </svg>
+// Sends the clicked product to the OrderSection (which is listening for
+// this event) and smooth-scrolls the page down to the order form.
+function addToOrderAndScroll(product) {
+  window.dispatchEvent(
+    new CustomEvent("add-to-order", { detail: { id: product.id } })
   );
+  const el = document.getElementById("order");
+  if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 export default function ProductVariants() {
@@ -81,7 +77,6 @@ export default function ProductVariants() {
         fontFamily: "'Hind Siliguri', 'Noto Sans Bengali', sans-serif",
       }}
     >
-
       <div className="p-root max-w-6xl mx-auto">
         <Reveal className="text-center mb-12">
           <p className="p-eyebrow">তাজা ও সতেজ</p>
@@ -90,13 +85,20 @@ export default function ProductVariants() {
           </h2>
         </Reveal>
 
-        {loading && <p className="text-center text-sm text-ink/60">পণ্য লোড হচ্ছে...</p>}
+        {loading && (
+          <div className="flex flex-col items-center justify-center gap-3 py-20">
+            <Loader2 className="h-10 w-10 animate-spin" style={{ color: "#1B5E3A" }} />
+            <p className="text-base font-medium" style={{ color: "#1B5E3A" }}>
+              পণ্য লোড হচ্ছে...
+            </p>
+          </div>
+        )}
         {error && <p className="text-center text-sm text-red-600">{error}</p>}
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-1.5 sm:gap-x-3 md:gap-x-5 gap-y-5 sm:gap-y-7 md:gap-y-10">
           {products.map((p) => (
             <Reveal key={p.id} className="p-tag-card rounded-md sm:rounded-lg md:rounded-xl">
-              <div className="p-img-slot aspect-square flex items-center justify-center relative">
+              <div className="p-img-slot aspect-square flex items-center justify-center relative overflow-hidden">
                 {p.image ? (
                   <img
                     src={api.imageUrl(p.image)}
@@ -106,24 +108,31 @@ export default function ProductVariants() {
                 ) : (
                   <LeafIcon className="w-10 h-10" style={{ color: "rgba(27,94,58,.35)" }} />
                 )}
+
+                {/* Price badge — top-right corner of the image */}
+                <span
+                  className="absolute top-1.5 right-1.5 sm:top-2 sm:right-2 rounded-full px-2 py-1 text-[10px] sm:text-xs font-extrabold shadow-md"
+                  style={{ background: "#1B5E3A", color: "#FFFFFF" }}
+                >
+                  ৳{p.price}
+                </span>
               </div>
-              <div className="px-3 pt-3">
+
+              <div className="px-3 pt-3 pb-3">
                 <h3 className="font-bold text-sm leading-snug" style={{ color: "#1A1A1A" }}>
                   {p.name}
                 </h3>
-                <p className="text-xs mt-1" style={{ color: "#5E5E5E" }}>
+                <p className="text-xs mt-1 line-clamp-2" style={{ color: "#5E5E5E" }}>
                   {p.note}
                 </p>
-                <p className="text-xs mt-1 font-semibold" style={{ color: "#1B5E3A" }}>
-                  ৳{p.price}.00
-                </p>
-                <a
-                  href={waLink(`আমি ${p.name} সম্পর্কে জানতে চাই। দাম: ৳${p.price}`)}
-                  className="p-btn-green text-xs mt-3 inline-flex items-center gap-1 md:gap-1.5 w-full justify-center"
+
+                <button
+                  type="button"
+                  onClick={() => addToOrderAndScroll(p)}
+                  className="p-btn-green text-xs mt-3 inline-flex items-center justify-center w-full"
                 >
-                  <ChatIcon className="w-3.5 h-3.5" />
                   অর্ডার করুন
-                </a>
+                </button>
               </div>
             </Reveal>
           ))}
