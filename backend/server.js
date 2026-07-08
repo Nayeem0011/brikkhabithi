@@ -10,33 +10,11 @@ const uploadRoutes = require("./routes/upload");
 
 const app = express();
 
-// CLIENT_ORIGIN can be a single URL or a comma-separated list (e.g. when you
-// have both a production and a preview frontend URL). Trailing slashes are
-// stripped since "https://x.com/" !== "https://x.com" for CORS matching.
-const allowedOrigins = (process.env.CLIENT_ORIGIN || "")
-  .split(",")
-  .map((o) => o.trim().replace(/\/$/, ""))
-  .filter(Boolean);
-
-app.use(
-  cors({
-    origin: allowedOrigins.length
-      ? allowedOrigins
-      : "*", // no CLIENT_ORIGIN set -> allow all (fine for testing, not ideal for production)
-  })
-);
+app.use(cors({ origin: process.env.CLIENT_ORIGIN || "*" }));
 app.use(express.json());
 
-console.log("=== Brikkhabithi backend starting ===");
-console.log("CLIENT_ORIGIN(s):", allowedOrigins.length ? allowedOrigins : "(none set — allowing *)");
-console.log("ADMIN_USERNAME set:", !!process.env.ADMIN_USERNAME);
-console.log("ADMIN_PASSWORD set:", !!process.env.ADMIN_PASSWORD);
-console.log("JWT_SECRET set:", !!process.env.JWT_SECRET);
-console.log("DATA_DIR:", process.env.DATA_DIR || "(not set — using ephemeral local disk, data will be lost on redeploy)");
-
-// Serve uploaded product images statically (see DATA_DIR note in db.js / upload.js)
-const uploadsPath = path.join(process.env.DATA_DIR || __dirname, "uploads");
-app.use("/uploads", express.static(uploadsPath));
+// Serve uploaded product images statically
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/api/health", (req, res) => res.json({ ok: true }));
 
