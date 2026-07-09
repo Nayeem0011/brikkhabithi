@@ -46,7 +46,7 @@ export default function AdminLogin() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none focus:border-vine"
+              className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none"
               autoFocus
             />
           </div>
@@ -56,7 +56,7 @@ export default function AdminLogin() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none focus:border-vine"
+              className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none"
             />
           </div>
         </div>

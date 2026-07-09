@@ -118,7 +118,7 @@ export default function ProductVariants() {
                 </span>
               </div>
 
-              <div className="px-3 pt-3 pb-3">
+              <div className="px-3 pt-3">
                 <h3 className="font-bold text-sm leading-snug" style={{ color: "#1A1A1A" }}>
                   {p.name}
                 </h3>

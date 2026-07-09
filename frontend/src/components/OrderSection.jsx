@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Minus, Plus } from "lucide-react";
+import { Loader2, Minus, Plus, X } from "lucide-react";
 import { api } from "../api";
 
 function Stepper({ value, onChange, disabled }) {
@@ -9,7 +9,7 @@ function Stepper({ value, onChange, disabled }) {
         type="button"
         disabled={disabled}
         onClick={() => onChange(Math.max(1, value - 1))}
-        className="grid h-6 w-6 place-items-center rounded-md text-vine-dark hover:bg-cream disabled:opacity-40"
+        className="grid h-6 w-6 place-items-center rounded-md text-vine-dark hover:bg-cream disabled:opacity-40 disabled:cursor-not-allowed"
         aria-label="কমান"
       >
         <Minus className="h-3.5 w-3.5" />
@@ -19,7 +19,7 @@ function Stepper({ value, onChange, disabled }) {
         type="button"
         disabled={disabled}
         onClick={() => onChange(value + 1)}
-        className="grid h-6 w-6 place-items-center rounded-md text-vine-dark hover:bg-cream disabled:opacity-40"
+        className="grid h-6 w-6 place-items-center rounded-md text-vine-dark hover:bg-cream disabled:opacity-40 disabled:cursor-not-allowed"
         aria-label="বাড়ান"
       >
         <Plus className="h-3.5 w-3.5" />
@@ -82,6 +82,7 @@ export default function OrderSection() {
   }, []);
 
   const toggleProduct = (product) => {
+    if (submitting) return;
     setSelections((prev) => {
       const next = { ...prev };
       if (next[product.id]) {
@@ -155,8 +156,24 @@ export default function OrderSection() {
 
   if (result) {
     return (
-      <section id="order" className="px-4 py-16 sm:px-6" style={{ background: "#FBF8F1" }}>
-        <div className="mx-auto max-w-2xl rounded-2xl border border-vine-light/20 bg-white px-6 py-12 text-center shadow-lg shadow-vine/10 sm:px-12">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4 py-8 animate-[fadeIn_0.2s_ease-out]"
+        onClick={() => setResult(null)}
+      >
+        <div
+          onClick={(e) => e.stopPropagation()} // card এর ভিতরে click করলে যেন বন্ধ না হয়
+          className="relative mx-auto w-full max-w-2xl rounded-2xl border border-vine-light/20 bg-white px-6 py-12 text-center shadow-2xl shadow-black/20 sm:px-12 animate-[scaleIn_0.25s_ease-out] max-h-[90vh] overflow-y-auto"
+        >
+          {/* Close button */}
+          <button
+            type="button"
+            onClick={() => setResult(null)}
+            className="absolute right-4 top-4 grid h-8 w-8 place-items-center rounded-full text-ink/40 hover:bg-cream hover:text-ink"
+            aria-label="বন্ধ করুন"
+          >
+            <X className="h-5 w-5" />
+          </button>
+
           <div
             className="mx-auto mb-6 grid h-24 w-24 place-items-center rounded-full"
             style={{ background: "#E9F1EA", color: "#1B5E3A" }}
@@ -188,7 +205,7 @@ export default function OrderSection() {
             আরেকটি অর্ডার করুন
           </button>
         </div>
-      </section>
+      </div>
     );
   }
 
@@ -218,16 +235,17 @@ export default function OrderSection() {
                 return (
                   <label
                     key={p.id}
-                    className={`flex cursor-pointer items-center gap-3 rounded-xl border p-3 transition ${checked
-                        ? "border-vine bg-vine/5 shadow-sm"
-                        : "border-vine-light/20 bg-white hover:border-vine-light/40"
-                      }`}
+                    className={`flex items-center gap-3 rounded-xl border p-3 transition ${checked
+                      ? "bg-vine/5 shadow-sm"
+                      : "border-vine-light/40 bg-white"
+                      } ${submitting ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
                   >
                     <input
                       type="checkbox"
                       checked={checked}
+                      disabled={submitting}
                       onChange={() => toggleProduct(p)}
-                      className="h-5 w-5 shrink-0 accent-[#1F4D2C]"
+                      className="h-5 w-5 shrink-0 accent-[#1F4D2C] disabled:cursor-not-allowed"
                     />
                     <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-cream">
                       {p.image ? (
@@ -245,7 +263,7 @@ export default function OrderSection() {
                     </div>
                     <Stepper
                       value={selections[p.id] || 1}
-                      disabled={!checked}
+                      disabled={!checked || submitting}
                       onChange={(v) => setQty(p.id, v)}
                     />
                   </label>
@@ -266,8 +284,9 @@ export default function OrderSection() {
                     type="text"
                     value={form.name}
                     onChange={handleChange("name")}
+                    disabled={submitting}
                     placeholder="আপনার নাম লিখুন..."
-                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-vine ${errors.name ? "border-red-400" : "border-vine-light/30"
+                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-cream/50 disabled:opacity-60 ${errors.name ? "border-red-400" : "border-vine-light/30"
                       }`}
                   />
                   {errors.name && <p className="mt-1 text-xs text-red-600">{errors.name}</p>}
@@ -280,8 +299,9 @@ export default function OrderSection() {
                     type="tel"
                     value={form.phone}
                     onChange={handleChange("phone")}
+                    disabled={submitting}
                     placeholder="01XXXXXXXXX"
-                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none focus:border-vine ${errors.phone ? "border-red-400" : "border-vine-light/30"
+                    className={`w-full rounded-lg border px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-cream/50 disabled:opacity-60 ${errors.phone ? "border-red-400" : "border-vine-light/30"
                       }`}
                   />
                   {errors.phone && <p className="mt-1 text-xs text-red-600">{errors.phone}</p>}
@@ -292,8 +312,9 @@ export default function OrderSection() {
                     type="text"
                     value={form.address}
                     onChange={handleChange("address")}
+                    disabled={submitting}
                     placeholder="জেলা, উপজেলা..."
-                    className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none focus:border-vine"
+                    className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-cream/50 disabled:opacity-60"
                   />
                 </div>
                 <div className="sm:col-span-2">
@@ -301,9 +322,10 @@ export default function OrderSection() {
                   <textarea
                     value={form.note}
                     onChange={handleChange("note")}
+                    disabled={submitting}
                     rows={3}
                     placeholder="কোনো বিশেষ নির্দেশনা থাকলে লিখুন..."
-                    className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none focus:border-vine"
+                    className="w-full rounded-lg border border-vine-light/30 px-3 py-2.5 text-sm outline-none disabled:cursor-not-allowed disabled:bg-cream/50 disabled:opacity-60"
                   />
                 </div>
               </div>
@@ -341,12 +363,13 @@ export default function OrderSection() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="p-btn-green mt-5 w-full justify-center disabled:opacity-60"
+                className="p-btn-green mt-5 flex w-full items-center justify-center gap-2 transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {submitting ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <Loader2 className="h-4 w-4 animate-spin" /> অর্ডার হচ্ছে...
-                  </span>
+                  <>
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    অর্ডার হচ্ছে...
+                  </>
                 ) : (
                   "অর্ডার নিশ্চিত করুন"
                 )}
